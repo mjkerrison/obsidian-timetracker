@@ -1,0 +1,489 @@
+/* Time Tracker Plugin Styles */
+
+/* Week View Container */
+.tt-week-view {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	overflow: hidden;
+}
+
+/* Week Header / Navigation */
+.tt-week-header {
+	padding: 8px 12px;
+	border-bottom: 1px solid var(--background-modifier-border);
+	flex-shrink: 0;
+}
+
+.tt-week-nav {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	justify-content: center;
+}
+
+.tt-nav-btn {
+	background: var(--background-secondary);
+	border: 1px solid var(--background-modifier-border);
+	border-radius: 4px;
+	padding: 4px 8px;
+	cursor: pointer;
+	color: var(--text-normal);
+	font-size: 14px;
+}
+
+.tt-nav-btn:hover {
+	background: var(--background-modifier-hover);
+}
+
+.tt-today-btn {
+	margin: 0 8px;
+	font-weight: 500;
+}
+
+.tt-period-display {
+	min-width: 120px;
+	text-align: center;
+	font-weight: 600;
+	color: var(--text-normal);
+}
+
+/* Grid Container */
+.tt-grid-container {
+	flex: 1;
+	overflow: auto;
+	position: relative;
+}
+
+/* Week Grid */
+.tt-week-grid {
+	display: grid;
+	grid-template-columns: 50px repeat(7, 1fr);
+	grid-template-rows: 40px repeat(96, 15px);
+	grid-auto-rows: 0; /* Prevent implicit rows */
+	position: relative;
+	min-width: 600px;
+	height: calc(40px + 96 * 15px); /* Explicit height: header + 96 slots */
+	max-height: calc(40px + 96 * 15px);
+}
+
+/* Grid Corner */
+.tt-grid-corner {
+	background: var(--background-primary);
+	border-bottom: 1px solid var(--background-modifier-border);
+	border-right: 1px solid var(--background-modifier-border);
+	position: sticky;
+	top: 0;
+	left: 0;
+	z-index: 20;
+}
+
+/* Day Headers */
+.tt-day-header {
+	background: var(--background-primary);
+	border-bottom: 1px solid var(--background-modifier-border);
+	border-right: 1px solid var(--background-modifier-border);
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	position: sticky;
+	top: 0;
+	z-index: 10;
+	padding: 4px;
+}
+
+.tt-day-header-today {
+	background: var(--interactive-accent);
+	color: var(--text-on-accent);
+}
+
+.tt-day-header-today .tt-day-name,
+.tt-day-header-today .tt-day-date {
+	color: var(--text-on-accent);
+}
+
+.tt-day-name {
+	font-weight: 600;
+	font-size: 12px;
+	color: var(--text-muted);
+}
+
+.tt-day-date {
+	font-size: 11px;
+	color: var(--text-faint);
+}
+
+/* Time Labels */
+.tt-time-label {
+	background: var(--background-primary);
+	border-right: 1px solid var(--background-modifier-border);
+	font-size: 10px;
+	color: var(--text-muted);
+	text-align: right;
+	padding-right: 4px;
+	position: sticky;
+	left: 0;
+	z-index: 5;
+}
+
+.tt-time-label-hour {
+	border-top: 1px solid var(--background-modifier-border);
+	padding-top: 2px;
+}
+
+/* Grid Cells */
+.tt-grid-cell {
+	border-right: 1px solid var(--background-modifier-border-hover);
+	border-bottom: 1px dotted var(--background-modifier-border-hover);
+	background: var(--background-primary);
+}
+
+.tt-grid-cell-hour {
+	border-top: 1px solid var(--background-modifier-border);
+}
+
+.tt-grid-cell:hover {
+	background: var(--background-secondary-alt);
+}
+
+/* Time Entries */
+.tt-entry {
+	position: relative;
+	background: var(--interactive-accent);
+	border-radius: 4px;
+	margin: 1px 2px;
+	padding: 4px 6px;
+	cursor: grab;
+	overflow: hidden;
+	z-index: 1;
+	border-left: 3px solid var(--interactive-accent-hover);
+}
+
+.tt-entry:hover {
+	z-index: 2;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.tt-entry-content {
+	color: var(--text-on-accent);
+	font-size: 11px;
+	line-height: 1.3;
+}
+
+.tt-entry-title {
+	font-weight: 500;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.tt-entry-time {
+	font-size: 10px;
+	opacity: 0.8;
+}
+
+.tt-entry-tags {
+	margin-top: 2px;
+}
+
+.tt-entry-tag {
+	background: rgba(255, 255, 255, 0.2);
+	padding: 1px 4px;
+	border-radius: 2px;
+	font-size: 9px;
+	margin-right: 2px;
+}
+
+/* Entry Variants */
+.tt-entry-pomodoro {
+	background: var(--color-red);
+	border-left-color: var(--color-red);
+}
+
+.tt-entry-break {
+	background: var(--color-green);
+	border-left-color: var(--color-green);
+	opacity: 0.7;
+}
+
+/* Resize Handles */
+.tt-entry-handle {
+	position: absolute;
+	left: 0;
+	right: 0;
+	height: 6px;
+	cursor: ns-resize;
+	background: transparent;
+}
+
+.tt-entry-handle-top {
+	top: 0;
+}
+
+.tt-entry-handle-bottom {
+	bottom: 0;
+}
+
+.tt-entry-handle:hover {
+	background: rgba(255, 255, 255, 0.3);
+}
+
+/* Paint Preview */
+.tt-paint-preview {
+	background: var(--interactive-accent);
+	opacity: 0.5;
+	border-radius: 4px;
+	margin: 1px 2px;
+	pointer-events: none;
+	z-index: 3;
+}
+
+/* Inline Editor */
+.tt-inline-editor {
+	background: var(--background-primary);
+	border: 2px solid var(--interactive-accent);
+	border-radius: 4px;
+	margin: 1px 2px;
+	padding: 4px;
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	z-index: 10;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.tt-inline-editor-input {
+	width: 100%;
+	padding: 4px 8px;
+	border: 1px solid var(--background-modifier-border);
+	border-radius: 4px;
+	background: var(--background-secondary);
+	color: var(--text-normal);
+	font-size: 12px;
+}
+
+.tt-inline-editor-input:focus {
+	outline: none;
+	border-color: var(--interactive-accent);
+}
+
+.tt-inline-editor-buttons {
+	display: flex;
+	gap: 4px;
+	justify-content: flex-end;
+}
+
+.tt-inline-editor-btn {
+	padding: 2px 8px;
+	border: none;
+	border-radius: 4px;
+	cursor: pointer;
+	font-size: 12px;
+}
+
+.tt-inline-editor-confirm {
+	background: var(--interactive-accent);
+	color: var(--text-on-accent);
+}
+
+.tt-inline-editor-cancel {
+	background: var(--background-modifier-border);
+	color: var(--text-normal);
+}
+
+/* Live Capture View */
+.tt-live-view {
+	display: flex;
+	flex-direction: column;
+	padding: 16px;
+	gap: 16px;
+}
+
+.tt-live-section {
+	background: var(--background-secondary);
+	border-radius: 8px;
+	padding: 16px;
+}
+
+.tt-live-section-title {
+	font-size: 12px;
+	font-weight: 600;
+	color: var(--text-muted);
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+	margin-bottom: 12px;
+}
+
+/* Timer Display */
+.tt-timer-display {
+	text-align: center;
+	padding: 20px;
+}
+
+.tt-timer-time {
+	font-size: 48px;
+	font-weight: 700;
+	font-family: var(--font-monospace);
+	color: var(--text-normal);
+	margin-bottom: 8px;
+}
+
+.tt-timer-status {
+	font-size: 14px;
+	color: var(--text-muted);
+}
+
+.tt-timer-status.tt-timer-running {
+	color: var(--color-green);
+}
+
+.tt-timer-status.tt-timer-break {
+	color: var(--color-blue);
+}
+
+/* Task Input */
+.tt-task-input-container {
+	margin-bottom: 16px;
+}
+
+.tt-task-input {
+	width: 100%;
+	padding: 8px 12px;
+	border: 1px solid var(--background-modifier-border);
+	border-radius: 6px;
+	background: var(--background-primary);
+	color: var(--text-normal);
+	font-size: 14px;
+}
+
+.tt-task-input:focus {
+	outline: none;
+	border-color: var(--interactive-accent);
+}
+
+/* Timer Controls */
+.tt-timer-controls {
+	display: flex;
+	gap: 8px;
+	justify-content: center;
+	flex-wrap: wrap;
+}
+
+.tt-timer-btn {
+	padding: 8px 16px;
+	border: none;
+	border-radius: 6px;
+	cursor: pointer;
+	font-size: 14px;
+	font-weight: 500;
+	transition: background 0.15s;
+}
+
+.tt-timer-btn-start {
+	background: var(--color-green);
+	color: white;
+}
+
+.tt-timer-btn-stop {
+	background: var(--color-red);
+	color: white;
+}
+
+.tt-timer-btn-pomodoro {
+	background: var(--color-red);
+	color: white;
+}
+
+.tt-timer-btn-pomodoro.tt-active {
+	background: var(--interactive-accent);
+}
+
+.tt-timer-btn:hover {
+	filter: brightness(1.1);
+}
+
+/* Quick Offset Buttons */
+.tt-offset-section {
+	margin-top: 12px;
+}
+
+.tt-offset-label {
+	font-size: 12px;
+	color: var(--text-muted);
+	margin-bottom: 8px;
+}
+
+.tt-offset-buttons {
+	display: flex;
+	gap: 6px;
+	flex-wrap: wrap;
+}
+
+.tt-offset-btn {
+	padding: 6px 12px;
+	border: 1px solid var(--background-modifier-border);
+	border-radius: 4px;
+	background: var(--background-primary);
+	color: var(--text-normal);
+	cursor: pointer;
+	font-size: 12px;
+}
+
+.tt-offset-btn:hover {
+	background: var(--background-modifier-hover);
+}
+
+/* Today Stats */
+.tt-today-stats {
+	text-align: center;
+}
+
+.tt-today-total {
+	font-size: 32px;
+	font-weight: 700;
+	color: var(--text-normal);
+}
+
+.tt-today-label {
+	font-size: 12px;
+	color: var(--text-muted);
+}
+
+/* Pomodoro Counter */
+.tt-pomodoro-counter {
+	display: flex;
+	justify-content: center;
+	gap: 6px;
+	margin-top: 12px;
+}
+
+.tt-pomodoro-dot {
+	width: 12px;
+	height: 12px;
+	border-radius: 50%;
+	background: var(--background-modifier-border);
+}
+
+.tt-pomodoro-dot.tt-completed {
+	background: var(--color-red);
+}
+
+/* Scrollbar styling */
+.tt-grid-container::-webkit-scrollbar {
+	width: 8px;
+	height: 8px;
+}
+
+.tt-grid-container::-webkit-scrollbar-track {
+	background: var(--background-secondary);
+}
+
+.tt-grid-container::-webkit-scrollbar-thumb {
+	background: var(--background-modifier-border);
+	border-radius: 4px;
+}
+
+.tt-grid-container::-webkit-scrollbar-thumb:hover {
+	background: var(--background-modifier-border-hover);
+}
