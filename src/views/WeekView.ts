@@ -90,26 +90,41 @@ export class WeekView extends ItemView {
 		if (!display) return;
 
 		display.empty();
-		const month = getMonthName(this.currentDate, false);
-		const year = this.currentDate.getFullYear();
-		display.textContent = `${month} ${year}`;
+
+		// Show the date range being displayed
+		if (this.weekGrid) {
+			const currentDate = this.weekGrid.getCurrentDate();
+			const month = getMonthName(currentDate, false);
+			const year = currentDate.getFullYear();
+			display.textContent = `${month} ${year}`;
+		} else {
+			const month = getMonthName(this.currentDate, false);
+			const year = this.currentDate.getFullYear();
+			display.textContent = `${month} ${year}`;
+		}
 	}
 
 	private navigateDay(delta: number) {
-		this.currentDate.setDate(this.currentDate.getDate() + delta);
-		this.weekGrid?.setCurrentDate(new Date(this.currentDate));
+		this.weekGrid?.navigateDay(delta);
+		if (this.weekGrid) {
+			this.currentDate = this.weekGrid.getCurrentDate();
+		}
 		this.updatePeriodDisplay();
 	}
 
 	private navigateWeek(delta: number) {
-		this.currentDate.setDate(this.currentDate.getDate() + delta * 7);
-		this.weekGrid?.setCurrentDate(new Date(this.currentDate));
+		this.weekGrid?.navigateWeek(delta);
+		if (this.weekGrid) {
+			this.currentDate = this.weekGrid.getCurrentDate();
+		}
 		this.updatePeriodDisplay();
 	}
 
 	private goToToday() {
-		this.currentDate = new Date();
-		this.weekGrid?.setCurrentDate(new Date(this.currentDate));
+		this.weekGrid?.goToToday();
+		if (this.weekGrid) {
+			this.currentDate = this.weekGrid.getCurrentDate();
+		}
 		this.updatePeriodDisplay();
 	}
 

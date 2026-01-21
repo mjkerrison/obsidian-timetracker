@@ -2,13 +2,11 @@ import { TimeEntry } from "../types";
 import { TimeTrackerStorage } from "../storage";
 import {
 	formatDate,
-	getWeekDates,
+	get7DaysFrom,
 	slotToTime,
 	timeToSlot,
 	getDayName,
 	getMonthName,
-	parseTimeToMinutes,
-	minutesToTime,
 } from "../utils/time";
 import { createTimeEntryElement, TimeEntryCallbacks } from "./TimeEntry";
 import { createInlineEditor, removeInlineEditor } from "./InlineEditor";
@@ -43,6 +41,8 @@ export class WeekGrid {
 	private options: WeekGridOptions;
 	private weekDates: Date[] = [];
 	private entries: Map<string, TimeEntry[]> = new Map();
+	// viewportStart is always the first visible day in the 7-day window
+	private viewportStart: Date;
 
 	private paintState: PaintState = {
 		isPainting: false,
@@ -69,12 +69,26 @@ export class WeekGrid {
 	constructor(container: HTMLElement, options: WeekGridOptions) {
 		this.container = container;
 		this.options = options;
-		this.weekDates = getWeekDates(options.currentDate, options.weekStartDay);
+		// Initialize viewport to the calendar week containing currentDate
+		this.viewportStart = this.getWeekStartDate(options.currentDate);
+		this.weekDates = get7DaysFrom(this.viewportStart);
 
 		this.boundMouseMove = this.handleMouseMove.bind(this);
 		this.boundMouseUp = this.handleMouseUp.bind(this);
 
 		this.render();
+	}
+
+	/**
+	 * Get the start of the calendar week containing the given date
+	 */
+	private getWeekStartDate(date: Date): Date {
+		const d = new Date(date);
+		const day = d.getDay();
+		const diff = (day - this.options.weekStartDay + 7) % 7;
+		d.setDate(d.getDate() - diff);
+		d.setHours(0, 0, 0, 0);
+		return d;
 	}
 
 	async render() {
@@ -494,14 +508,68 @@ export class WeekGrid {
 		// No render needed if nothing changed
 	}
 
-	setCurrentDate(date: Date) {
-		this.options.currentDate = date;
-		this.weekDates = getWeekDates(date, this.options.weekStartDay);
+	/**
+	 * Navigate by a single day - slides the viewport
+	 */
+	navigateDay(delta: number) {
+		const newStart = new Date(this.viewportStart);
+		newStart.setDate(newStart.getDate() + delta);
+		this.viewportStart = newStart;
+		this.weekDates = get7DaysFrom(this.viewportStart);
 		this.render();
 	}
 
+	/**
+	 * Navigate by a full week - snaps to calendar-aligned week
+	 * From current viewport position, finds the containing calendar week,
+	 * then moves by delta weeks
+	 */
+	navigateWeek(delta: number) {
+		const currentWeekStart = this.getWeekStartDate(this.viewportStart);
+		const newStart = new Date(currentWeekStart);
+		newStart.setDate(newStart.getDate() + delta * 7);
+		this.viewportStart = newStart;
+		this.weekDates = get7DaysFrom(this.viewportStart);
+		this.render();
+	}
+
+	/**
+	 * Go to today - snaps to calendar-aligned week containing today
+	 */
+	goToToday() {
+		this.viewportStart = this.getWeekStartDate(new Date());
+		this.weekDates = get7DaysFrom(this.viewportStart);
+		this.render();
+	}
+
+	/**
+	 * Set viewport start directly (used for external control)
+	 * If alignToWeek is true, snaps to calendar week containing the date
+	 */
+	setCurrentDate(date: Date, alignToWeek: boolean = true) {
+		if (alignToWeek) {
+			this.viewportStart = this.getWeekStartDate(date);
+		} else {
+			this.viewportStart = new Date(date);
+			this.viewportStart.setHours(0, 0, 0, 0);
+		}
+		this.weekDates = get7DaysFrom(this.viewportStart);
+		this.render();
+	}
+
+	/**
+	 * Get the first visible date in the viewport
+	 */
 	getCurrentDate(): Date {
-		return this.options.currentDate;
+		return this.viewportStart;
+	}
+
+	/**
+	 * Check if the viewport is aligned to a calendar week
+	 */
+	isAligned(): boolean {
+		const weekStart = this.getWeekStartDate(this.viewportStart);
+		return this.viewportStart.getTime() === weekStart.getTime();
 	}
 
 	destroy() {

@@ -56,7 +56,7 @@ export function getWeekStart(date: Date, weekStartDay: 0 | 1): Date {
 }
 
 /**
- * Get array of 7 dates for the week containing the given date
+ * Get array of 7 dates for the week containing the given date (calendar-week aligned)
  */
 export function getWeekDates(date: Date, weekStartDay: 0 | 1): Date[] {
 	const start = getWeekStart(date, weekStartDay);
@@ -64,6 +64,20 @@ export function getWeekDates(date: Date, weekStartDay: 0 | 1): Date[] {
 	for (let i = 0; i < 7; i++) {
 		const d = new Date(start);
 		d.setDate(start.getDate() + i);
+		dates.push(d);
+	}
+	return dates;
+}
+
+/**
+ * Get array of 7 consecutive dates starting from the given date (sliding window)
+ */
+export function get7DaysFrom(date: Date): Date[] {
+	const dates: Date[] = [];
+	for (let i = 0; i < 7; i++) {
+		const d = new Date(date);
+		d.setDate(date.getDate() + i);
+		d.setHours(0, 0, 0, 0);
 		dates.push(d);
 	}
 	return dates;
