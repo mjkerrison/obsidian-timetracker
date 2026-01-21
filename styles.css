@@ -65,6 +65,7 @@
 	min-width: 600px;
 	height: calc(40px + 96 * 15px); /* Explicit height: header + 96 slots */
 	max-height: calc(40px + 96 * 15px);
+	outline: none; /* Hide focus ring - entry selection provides visual feedback */
 }
 
 /* Grid Corner */
@@ -205,6 +206,13 @@
 	background: var(--color-green);
 	border-left-color: var(--color-green);
 	opacity: 0.7;
+}
+
+/* Focused Entry */
+.tt-entry-focused {
+	outline: 2px solid var(--text-normal);
+	outline-offset: 1px;
+	z-index: 3;
 }
 
 /* Resize Handles */

@@ -11,6 +11,7 @@ A visual calendar grid for viewing and editing time entries.
 - **15-minute granularity** - Each row represents a 15-minute slot
 - **Click and drag** to paint new entries, then type a description
 - **Double-click** existing entries to edit their description
+- **Click to select** an entry, then press **Delete** or **Backspace** to remove it
 - **Drag edges** to resize entries (change start/end times)
 - **Drag body** to move entries to different times
 - **Smooth navigation** - Day buttons slide the viewport continuously; week buttons snap to calendar-aligned weeks

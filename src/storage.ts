@@ -2,7 +2,7 @@ import { App, TFile, Notice } from "obsidian";
 import { TimeEntry, TimeTrackerSettings } from "./types";
 
 // 2025-01-21 11:00 - 12:30 | Meeting with team #work
-const ENTRY_REGEX = /^(\d{4}-\d{2}-\d{2})\s+(\d{2}:\d{2})\s*-\s*(\d{2}:\d{2})\s*\|\s*(.+)$/;
+const ENTRY_REGEX = /^(\d{4}-\d{2}-\d{2})\s+(\d{2}:\d{2})\s*-\s*(\d{2}:\d{2})\s*\|\s*(.*)$/;
 
 /**
  * Generate a stable ID based on entry content.

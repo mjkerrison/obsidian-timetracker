@@ -65,6 +65,8 @@ export class WeekGrid {
 	private inlineEditorEl: HTMLElement | null = null;
 	private boundMouseMove: (e: MouseEvent) => void;
 	private boundMouseUp: (e: MouseEvent) => void;
+	private boundKeyDown: (e: KeyboardEvent) => void;
+	private focusedEntryId: string | null = null;
 
 	constructor(container: HTMLElement, options: WeekGridOptions) {
 		this.container = container;
@@ -75,6 +77,7 @@ export class WeekGrid {
 
 		this.boundMouseMove = this.handleMouseMove.bind(this);
 		this.boundMouseUp = this.handleMouseUp.bind(this);
+		this.boundKeyDown = this.handleKeyDown.bind(this);
 
 		this.render();
 	}
@@ -119,6 +122,10 @@ export class WeekGrid {
 
 	private renderGrid() {
 		this.gridEl = this.container.createDiv({ cls: "tt-week-grid" });
+
+		// Make grid focusable for keyboard events
+		this.gridEl.setAttribute("tabindex", "0");
+		this.gridEl.addEventListener("keydown", this.boundKeyDown);
 
 		// Header row
 		this.renderHeader();
@@ -203,6 +210,7 @@ export class WeekGrid {
 			onEdit: (entry) => this.handleEditEntry(entry),
 			onResizeStart: (entry, edge, e) => this.handleResizeStart(entry, edge, e),
 			onDragStart: (entry, e) => this.handleDragStart(entry, e),
+			onFocus: (entry) => this.handleFocusEntry(entry),
 		};
 
 		this.weekDates.forEach((date, dayIndex) => {
@@ -210,7 +218,8 @@ export class WeekGrid {
 			const dayEntries = this.entries.get(dateStr) || [];
 
 			dayEntries.forEach((entry) => {
-				const entryEl = createTimeEntryElement(entry, callbacks, dayIndex);
+				const isFocused = entry.id === this.focusedEntryId;
+				const entryEl = createTimeEntryElement(entry, callbacks, dayIndex, isFocused);
 				this.gridEl!.appendChild(entryEl);
 			});
 		});
@@ -219,6 +228,9 @@ export class WeekGrid {
 	private handleCellMouseDown(e: MouseEvent, dayIndex: number, slot: number) {
 		if (e.button !== 0) return; // Only left click
 		if (this.dragState.isDragging) return;
+
+		// Clear focus when clicking on empty cells
+		this.clearFocus();
 
 		e.preventDefault();
 
@@ -508,6 +520,63 @@ export class WeekGrid {
 		// No render needed if nothing changed
 	}
 
+	private handleFocusEntry(entry: TimeEntry) {
+		if (this.focusedEntryId === entry.id) {
+			// Already focused, do nothing (or could toggle off)
+			return;
+		}
+		this.focusedEntryId = entry.id;
+		this.updateFocusVisuals();
+
+		// Focus the grid container to receive keyboard events
+		this.gridEl?.focus();
+	}
+
+	private clearFocus() {
+		if (this.focusedEntryId) {
+			this.focusedEntryId = null;
+			this.updateFocusVisuals();
+		}
+	}
+
+	private updateFocusVisuals() {
+		if (!this.gridEl) return;
+
+		// Remove focused class from all entries
+		this.gridEl.querySelectorAll(".tt-entry-focused").forEach((el) => {
+			el.classList.remove("tt-entry-focused");
+		});
+
+		// Add focused class to the focused entry
+		if (this.focusedEntryId) {
+			const focusedEl = this.gridEl.querySelector(`[data-entry-id="${this.focusedEntryId}"]`);
+			if (focusedEl) {
+				focusedEl.classList.add("tt-entry-focused");
+			}
+		}
+	}
+
+	private async handleKeyDown(e: KeyboardEvent) {
+		// Only handle Delete/Backspace when an entry is focused
+		if (!this.focusedEntryId) return;
+
+		// Don't interfere with input elements
+		const target = e.target as HTMLElement;
+		if (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable) {
+			return;
+		}
+
+		if (e.key === "Delete" || e.key === "Backspace") {
+			e.preventDefault();
+			const entryId = this.focusedEntryId;
+			this.focusedEntryId = null;
+			await this.options.storage.deleteEntry(entryId);
+			await this.render();
+		} else if (e.key === "Escape") {
+			this.clearFocus();
+		}
+	}
+
 	/**
 	 * Navigate by a single day - slides the viewport
 	 */
@@ -575,5 +644,6 @@ export class WeekGrid {
 	destroy() {
 		document.removeEventListener("mousemove", this.boundMouseMove);
 		document.removeEventListener("mouseup", this.boundMouseUp);
+		// keydown listener is on gridEl, cleaned up when element is removed
 	}
 }

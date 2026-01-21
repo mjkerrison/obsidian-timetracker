@@ -5,12 +5,14 @@ export interface TimeEntryCallbacks {
 	onEdit: (entry: TimeEntryData) => void;
 	onResizeStart: (entry: TimeEntryData, edge: "top" | "bottom", e: MouseEvent) => void;
 	onDragStart: (entry: TimeEntryData, e: MouseEvent) => void;
+	onFocus: (entry: TimeEntryData) => void;
 }
 
 export function createTimeEntryElement(
 	entry: TimeEntryData,
 	callbacks: TimeEntryCallbacks,
-	dayIndex: number
+	dayIndex: number,
+	isFocused: boolean = false
 ): HTMLElement {
 	const startMinutes = parseTimeToMinutes(entry.startTime);
 	const endMinutes = parseTimeToMinutes(entry.endTime);
@@ -29,6 +31,9 @@ export function createTimeEntryElement(
 	}
 	if (entry.isBreak) {
 		el.classList.add("tt-entry-break");
+	}
+	if (isFocused) {
+		el.classList.add("tt-entry-focused");
 	}
 
 	// Position using CSS grid
@@ -77,6 +82,12 @@ export function createTimeEntryElement(
 		if (!(e.target as HTMLElement).classList.contains("tt-entry-handle")) {
 			callbacks.onDragStart(entry, e);
 		}
+	});
+
+	// Single click to focus
+	el.addEventListener("click", (e) => {
+		e.stopPropagation();
+		callbacks.onFocus(entry);
 	});
 
 	return el;
