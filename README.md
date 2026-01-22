@@ -16,6 +16,7 @@ A visual calendar grid for viewing and editing time entries.
 - **Drag body** to move entries to different times
 - **Smooth navigation** - Day buttons slide the viewport continuously; week buttons snap to calendar-aligned weeks
 - **Today highlighting** - Current day is visually highlighted
+- **Working hours shading** - Configurable hours (default 9-5) are subtly shaded on weekdays
 
 ### Live Capture View
 
@@ -48,6 +49,8 @@ All entries are stored in a single markdown file (default: `time-tracking.md`) u
 |---------|---------|-------------|
 | File path | `time-tracking.md` | Where to store time entries |
 | Week start day | Monday | First day of the calendar week |
+| Working hours start | `09:00` | Start of working hours (shaded on weekdays) |
+| Working hours end | `17:00` | End of working hours (shaded on weekdays) |
 | Pomodoro work minutes | 25 | Duration of work sessions |
 | Pomodoro break minutes | 5 | Duration of short breaks |
 | Pomodoro long break minutes | 15 | Duration of long breaks |

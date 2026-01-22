@@ -19,6 +19,8 @@ export interface TimeTrackerSettings {
 	soundEnabled: boolean;
 	notificationsEnabled: boolean;
 	quickOffsets: number[];
+	workingHoursStart: string; // HH:MM
+	workingHoursEnd: string; // HH:MM
 }
 
 export const DEFAULT_SETTINGS: TimeTrackerSettings = {
@@ -31,6 +33,8 @@ export const DEFAULT_SETTINGS: TimeTrackerSettings = {
 	soundEnabled: true,
 	notificationsEnabled: true,
 	quickOffsets: [5, 10, 15, 30],
+	workingHoursStart: "09:00",
+	workingHoursEnd: "17:00",
 };
 
 export const VIEW_TYPE_WEEK = "time-tracker-week-view";

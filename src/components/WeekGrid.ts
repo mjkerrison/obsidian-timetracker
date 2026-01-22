@@ -16,6 +16,8 @@ export interface WeekGridOptions {
 	currentDate: Date;
 	storage: TimeTrackerStorage;
 	onDateChange?: (date: Date) => void;
+	workingHoursStart: string; // HH:MM
+	workingHoursEnd: string; // HH:MM
 }
 
 interface PaintState {
@@ -184,7 +186,14 @@ export class WeekGrid {
 	private renderDayColumns() {
 		if (!this.gridEl) return;
 
+		const workStartSlot = timeToSlot(this.options.workingHoursStart);
+		const workEndSlot = timeToSlot(this.options.workingHoursEnd);
+
 		for (let dayIndex = 0; dayIndex < 7; dayIndex++) {
+			const date = this.weekDates[dayIndex];
+			const dayOfWeek = date.getDay(); // 0 = Sunday, 1-5 = Mon-Fri, 6 = Saturday
+			const isWeekday = dayOfWeek >= 1 && dayOfWeek <= 5;
+
 			for (let slot = 0; slot < 96; slot++) {
 				const cell = this.gridEl.createDiv({ cls: "tt-grid-cell" });
 				cell.style.gridColumn = String(dayIndex + 2);
@@ -195,6 +204,11 @@ export class WeekGrid {
 				// Hour line
 				if (slot % 4 === 0) {
 					cell.classList.add("tt-grid-cell-hour");
+				}
+
+				// Working hours shading (weekdays only)
+				if (isWeekday && slot >= workStartSlot && slot < workEndSlot) {
+					cell.classList.add("tt-grid-cell-working-hours");
 				}
 
 				// Click handlers for painting

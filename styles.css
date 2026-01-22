@@ -144,6 +144,10 @@
 	border-top: 1px solid var(--background-modifier-border);
 }
 
+.tt-grid-cell-working-hours {
+	background: var(--background-secondary);
+}
+
 .tt-grid-cell:hover {
 	background: var(--background-secondary-alt);
 }

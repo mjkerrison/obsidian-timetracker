@@ -44,6 +44,38 @@ export class TimeTrackerSettingTab extends PluginSettingTab {
 					})
 			);
 
+		new Setting(containerEl)
+			.setName("Working hours start")
+			.setDesc("Start of working hours (shaded on weekdays)")
+			.addText((text) =>
+				text
+					.setPlaceholder(DEFAULT_SETTINGS.workingHoursStart)
+					.setValue(this.plugin.settings.workingHoursStart)
+					.onChange(async (value) => {
+						if (/^\d{2}:\d{2}$/.test(value)) {
+							this.plugin.settings.workingHoursStart = value;
+							await this.plugin.saveSettings();
+							this.plugin.refreshViews();
+						}
+					})
+			);
+
+		new Setting(containerEl)
+			.setName("Working hours end")
+			.setDesc("End of working hours (shaded on weekdays)")
+			.addText((text) =>
+				text
+					.setPlaceholder(DEFAULT_SETTINGS.workingHoursEnd)
+					.setValue(this.plugin.settings.workingHoursEnd)
+					.onChange(async (value) => {
+						if (/^\d{2}:\d{2}$/.test(value)) {
+							this.plugin.settings.workingHoursEnd = value;
+							await this.plugin.saveSettings();
+							this.plugin.refreshViews();
+						}
+					})
+			);
+
 		containerEl.createEl("h3", { text: "Pomodoro Settings" });
 
 		new Setting(containerEl)

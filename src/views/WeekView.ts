@@ -44,6 +44,8 @@ export class WeekView extends ItemView {
 			weekStartDay: this.plugin.settings.weekStartDay,
 			currentDate: this.currentDate,
 			storage: this.plugin.storage,
+			workingHoursStart: this.plugin.settings.workingHoursStart,
+			workingHoursEnd: this.plugin.settings.workingHoursEnd,
 		});
 
 		// Listen for storage changes
