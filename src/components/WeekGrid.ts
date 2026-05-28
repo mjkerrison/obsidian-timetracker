@@ -648,6 +648,32 @@ export class WeekGrid {
 	}
 
 	/**
+	 * Open the inline editor on an existing entry by ID. If the entry's date
+	 * isn't currently visible, snap the viewport to its containing week first.
+	 */
+	async openEditorForEntry(entryId: string) {
+		const entry = this.options.storage.getEntries().find((e) => e.id === entryId);
+		if (!entry) return;
+
+		let dayIndex = this.weekDates.findIndex((d) => formatDate(d) === entry.date);
+		if (dayIndex === -1) {
+			const target = new Date(entry.date);
+			this.viewportStart = this.getWeekStartDate(target);
+			this.weekDates = get7DaysFrom(this.viewportStart);
+			await this.render();
+			dayIndex = this.weekDates.findIndex((d) => formatDate(d) === entry.date);
+			if (dayIndex === -1) return;
+		}
+
+		this.handleEditEntry(entry);
+
+		// Scroll the new editor into view
+		requestAnimationFrame(() => {
+			this.inlineEditorEl?.scrollIntoView({ block: "center", behavior: "smooth" });
+		});
+	}
+
+	/**
 	 * Check if the viewport is aligned to a calendar week
 	 */
 	isAligned(): boolean {

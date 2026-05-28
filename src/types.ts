@@ -39,3 +39,4 @@ export const DEFAULT_SETTINGS: TimeTrackerSettings = {
 
 export const VIEW_TYPE_WEEK = "time-tracker-week-view";
 export const VIEW_TYPE_LIVE = "time-tracker-live-view";
+export const VIEW_TYPE_COMBINED = "time-tracker-combined-view";
