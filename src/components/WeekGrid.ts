@@ -7,6 +7,7 @@ import {
 	timeToSlot,
 	getDayName,
 	getMonthName,
+	formatDuration,
 } from "../utils/time";
 import { createTimeEntryElement, TimeEntryCallbacks } from "./TimeEntry";
 import { createInlineEditor, removeInlineEditor } from "./InlineEditor";
@@ -159,8 +160,13 @@ export class WeekGrid {
 			const dayDate = header.createDiv({ cls: "tt-day-date" });
 			dayDate.textContent = `${getMonthName(date)} ${date.getDate()}`;
 
+			const dateStr = formatDate(date);
+			const totalMinutes = this.options.storage.getTotalMinutesForDate(dateStr);
+			const dayTotal = header.createDiv({ cls: "tt-day-total" });
+			dayTotal.textContent = totalMinutes > 0 ? formatDuration(totalMinutes) : "";
+
 			// Highlight today
-			if (formatDate(date) === formatDate(new Date())) {
+			if (dateStr === formatDate(new Date())) {
 				header.classList.add("tt-day-header-today");
 			}
 		});
@@ -277,8 +283,8 @@ export class WeekGrid {
 		const y = e.clientY - rect.top + scrollTop;
 
 		// Calculate slot from y position
-		// Header is 40px, each slot is 15px
-		const headerHeight = 40;
+		// Header is 56px, each slot is 15px (keep in sync with .tt-week-grid CSS)
+		const headerHeight = 56;
 		const slotHeight = 15;
 		const slot = Math.floor((y - headerHeight) / slotHeight);
 		const clampedSlot = Math.max(0, Math.min(95, slot));
